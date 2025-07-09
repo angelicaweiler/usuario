@@ -16,32 +16,29 @@ import java.util.Date;
 public class JwtUtil {
 
     // Chave secreta usada para assinar e verificar tokens JWT
-    @Value("${security.apiKey}")
-    private String base64SecretKey;
+    private final String secretKey = "c3VhLWNoYXZlLXNlY3JldGEtc3VwZXItc2VndXJhLXF1ZS1kZXZlLXNlci1iZW0tbG9uZ2E=";
 
-    // Gera uma Key a partir da chave secreta String codificada em Base64
-    private SecretKey getSigningKey() {
-        // Decodifica a chave secreta em Base64 padrão e cria uma SecretKey
-        byte[] keyBytes = Base64.getDecoder().decode(base64SecretKey);
-        return Keys.hmacShaKeyFor(keyBytes);
+    private SecretKey getSecretKey(){
+        byte[] key = Base64.getDecoder().decode(secretKey);
+        return Keys.hmacShaKeyFor(key);
     }
+
     // Gera um token JWT com o nome de usuário e validade de 1 hora
     public String generateToken(String username) {
-        return Jwts.builder() // Inicia o processo de construção do token JWT
-                .subject(username) // Define o nome de usuário como o "subject" do token
-                .issuedAt(new Date()) // Define a data e hora atuais como o momento de emissão do token
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 600 * 600)) // Define a data e hora de expiração do token para 1 hora a partir da emissão
-                .signWith(getSigningKey()) // Assina o token usando a chave de assinatura fornecida pelo método getSigningKey()
-                .compact(); // Conclui a construção do token e retorna o token compactado como uma String
+        return Jwts.builder()
+                .subject(username) // Define o email de usuário como o assunto do token
+                .issuedAt(new Date()) // Define a data e hora de emissão do token
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // Define a data e hora de expiração (1 hora a partir da emissão)
+                .signWith(getSecretKey()) // Converte a chave secreta em bytes e assina o token com ela
+                .compact(); // Constrói o token JWT
     }
-
     // Extrai as claims do token JWT (informações adicionais do token)
     private Claims extractClaims(String token) {
-        return Jwts.parser() // Inicia o processo de parsing do token JWT
-                .verifyWith(getSigningKey()) // Configura o parser para verificar a assinatura do token usando a chave de assinatura fornecida
-                .build() // Conclui a configuração do parser
-                .parseSignedClaims(token) // Faz o parsing do token e extrai as claims assinadas
-                .getPayload(); // Obtém o payload (corpo) do token, que contém as claims
+        return Jwts.parser()
+                .verifyWith(getSecretKey()) // Define a chave secreta para validar a assinatura do token
+                .build()
+                .parseSignedClaims(token) // Analisa o token JWT e obtém as claims
+                .getPayload();  // Obtém o payload (corpo) do token, que contém as claims
     }
 
     // Extrai o email do usuário do token JWT
