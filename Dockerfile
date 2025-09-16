@@ -1,7 +1,7 @@
 FROM gradle:7.5-jdk17 as build
 WORKDIR /app
 copy . .
-run gradle build -no--daemon
+run gradle build --no-daemon
 
 FROM openjdk:17-jdk-alpine
 WORKDIR /app
