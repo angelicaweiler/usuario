@@ -28,7 +28,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .subject(username) // Define o email de usuário como o assunto do token
                 .issuedAt(new Date()) // Define a data e hora de emissão do token
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // Define a data e hora de expiração (1 hora a partir da emissão)
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 )) // Define a data e hora de expiração (1 hora a partir da emissão)
                 .signWith(getSecretKey()) // Converte a chave secreta em bytes e assina o token com ela
                 .compact(); // Constrói o token JWT
     }
