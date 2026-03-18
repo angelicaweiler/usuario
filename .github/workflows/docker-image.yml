@@ -19,7 +19,8 @@ jobs:
 
           script: |
             cd /root/app/usuario
-            git pull
+            git pull origin master
+            cd ..
             docker compose down --remove-orphans
-            docker compose build
-            docker compose up -d
+            docker compose build --no-cache usuario
+            docker compose up -d --force-recreate usuario
