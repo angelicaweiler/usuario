@@ -14,13 +14,13 @@ import java.time.Duration;
 @Configuration
 public class RedisConfig {
 
-    @Value("$redis.port")
-    private String porta;
+    @Value("${redis.port}")
+    private int porta;
 
-    @Value("$redis.hostname")
+    @Value("${redis.hostname}")
     private String hostname;
 
-    @Value("$redis.password")
+    @Value("${redis.password}")
     private String password;
 
 
@@ -30,7 +30,7 @@ public class RedisConfig {
 
         RedisStandaloneConfiguration serverConfiguration = new RedisStandaloneConfiguration();
         serverConfiguration.setHostName(hostname); //qual o host que rodando
-        serverConfiguration.setPort(Integer.parseInt(porta)); //qual a porta
+        serverConfiguration.setPort(porta); //qual a porta
         serverConfiguration.setPassword(password); // qual a senha
 
         SocketOptions socketOptions = SocketOptions.builder()
