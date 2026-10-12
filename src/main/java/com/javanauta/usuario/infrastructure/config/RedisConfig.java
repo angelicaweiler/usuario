@@ -45,6 +45,7 @@ public class RedisConfig {
                 .clientOptions(clientOptions) //timeout para iniciar a conexao
                 .commandTimeout(Duration.ofMillis(2000))  //timeout pra setar ou buscar os dados
                 .shutdownTimeout(Duration.ofMillis(100))  // tempo que permanece conectado depois que a api fecha
+                .useSsl()
                 .build();
 
         LettuceConnectionFactory factory = new LettuceConnectionFactory(serverConfiguration, clientConfiguration);
