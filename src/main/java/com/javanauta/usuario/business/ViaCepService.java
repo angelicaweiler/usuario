@@ -6,6 +6,7 @@ import com.javanauta.usuario.infrastructure.clients.ViaCepDTO;
 import com.javanauta.usuario.infrastructure.exceptions.IllegalArgumentException;
 import com.javanauta.usuario.infrastructure.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ViaCepService {
 
     private final ViaCepClient client;
@@ -26,15 +28,16 @@ public class ViaCepService {
             String cepLimpo = processarCep(cep);
             String key = "enderecos" + cepLimpo;
 
+            log.debug("Iniciando busca pelo redis");
             String dadosCacheRedis = redisTemplate.opsForValue().get(key);
-
+            log.debug("Finalizando busca pelo redis {}", dadosCacheRedis);
             if (Objects.nonNull(dadosCacheRedis)) {
 
                 return objectMapper.readValue(dadosCacheRedis, ViaCepDTO.class);
             }
-
+            log.debug("Iniciando busca no client viaCEP");
             ViaCepDTO dto = client.buscaDadosEndereco(cepLimpo);
-
+            log.debug("Finalizando busca no client viaCEP");
             if (Objects.nonNull(dto) && Objects.nonNull(dto.getCep())) {
                 String stringDTO = objectMapper.writeValueAsString(dto);
 
@@ -43,6 +46,7 @@ public class ViaCepService {
 
             return dto;
         } catch (Exception e) {
+            log.error("Erro ao buscar cep no viaCEP: {}", e.getMessage());
             throw new ResourceNotFoundException("Erro ao obter cep", e);
         }
     }
