@@ -23,8 +23,6 @@ public class RedisConfig {
     @Value("${redis.password}")
     private String password;
 
-
-
     @Bean
     public LettuceConnectionFactory redisConnectionFactory(){
 
