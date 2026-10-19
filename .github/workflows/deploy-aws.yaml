@@ -1,0 +1,21 @@
+name: CI - Java e Docker
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar codigo
+        uses: actions/checkout@v4
+
+      - name: Build e testes da aplicacao
+        run: docker build -t usuario-api:ci .
